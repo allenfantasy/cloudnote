@@ -1,4 +1,6 @@
 class NotesController < ApplicationController
+  respond_to :html, :json
+
   def index
     @notes = Note.all
     # return json
@@ -11,6 +13,13 @@ class NotesController < ApplicationController
 
   # API
   def create
+    @note = Note.new(params.require(:note).permit(:body))
+    flash[:notice] = 'Note was successfully created!' if @note.save
+    respond_with(@note)
+  end
+
+  def show
+    @note = Note.find(params[:id])
   end
 
   def sync
@@ -22,7 +31,7 @@ class NotesController < ApplicationController
     #     updated_at: ...
     #   },
     #   {
-    #     id: 3,
+      #     id: 3,
     #     body: ...
     #     updated_at: ...
     #   },
