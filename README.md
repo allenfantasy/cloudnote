@@ -97,10 +97,36 @@ RESPONSE FORMAT
     body: "Note B",
     timestamp: 1403706662095
   },
-  { // new record
+  {
     id: 3,
     body: "Note C",
     timestamp: 1403706681210
   }
 ]
 ```
+
+##### DELETE /notes/:id
+
+* 删除某个条目 e.g: DELETE /notes/1 即删除id=1的note
+* 目前我们的策略（其实这样不是很好，要再讨论）是：在客户端删除某条Note时，**立即** 向服务器发一个DELETE的请求
+
+RESPONSE FORMAT
+
+```javascript
+// Assuming the request is: DELETE /notes/1
+
+// success
+{
+  code: 200,
+  id: 1,
+  message: 'delete success.'
+}
+
+// failed
+{
+  code: 400,
+  id: 1,
+  message: 'something fucked up' // maybe be some custom error msg, anyway
+}
+```
+
