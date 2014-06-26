@@ -1,4 +1,4 @@
-### CloudNote API Document
+### CloudNote Document
 
 #### Data Structure
 
@@ -13,6 +13,8 @@
 #### API
 
 * 请求和返回都是JSON
+
+##### authentication [TBD]
 
 ##### POST /notes/sync
 
