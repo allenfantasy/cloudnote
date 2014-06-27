@@ -39,7 +39,14 @@
 }
 ```
 
-在后台拿到请求时，会用同样的算法，利用TOKEN和传来的timestamp和nonce计算出signature，与传来的signature比较，如果比较结果相同则验证成功
+在后台拿到请求时，会用同样的算法，利用TOKEN和传来的timestamp和nonce计算出signature，与传来的signature比较，如果比较结果相同则验证成功；否则返回：
+
+```javascript
+{
+  code: 400,
+  message: 'authentication failed'
+}
+```
 
 #### 用户验证 [TBD]
 
