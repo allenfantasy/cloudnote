@@ -16,14 +16,17 @@
 
 #### 对于设备请求的验证
 
-说明:
+**[ATTENTION!!!!]**
 
-* TOKEN: 事先硬编码在代码中, service和app共享
+服务器端在处理**所有**请求之前都会进行请求验证，请客户端每次发起请求时都在Header中带上以下信息：
+
 * Nonce: 随机字符串
-* Timestamp: 当前时间戳
+* Timestamp: 当前utc时间戳
 * Signature: 用TOKEN, Nonce和Timestamp组合加密得到的签名
 
-每次请求时:
+TOKEN事先硬编码在代码中, service和app共享
+
+【接下来是发起请求的流程】在每次请求时:
 
 1. 获取当前的Timestamp
 2. 随机生成一个Nonce字符串
@@ -39,7 +42,14 @@
 }
 ```
 
-在后台拿到请求时，会用同样的算法，利用TOKEN和传来的timestamp和nonce计算出signature，与传来的signature比较，如果比较结果相同则验证成功
+在后台拿到请求时，会用同样的算法，利用TOKEN和传来的Timestamp和Nonce计算出signature，与传来的Signature比较，如果比较结果相同则验证成功，返回所请求的内容，否则返回以下json：
+
+```javascript
+{
+  code: 400,
+  message: 'authentication failed'
+}
+```
 
 #### 用户验证 [TBD]
 
