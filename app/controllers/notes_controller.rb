@@ -1,9 +1,16 @@
+require 'base64'
+require 'openssl'
+
 class NotesController < ApplicationController
+  TOKEN = "cloudnote"
+
   respond_to :html, :json
+
+  before_action :check_signature
 
   def index
     @notes = Note.all
-    # return json
+
     render json: @notes
   end
 
@@ -33,8 +40,6 @@ class NotesController < ApplicationController
   end
 
   def sync
-    # TODO: check token
-
     logger.info "REQUEST IN >>>"
     logger.info JSON.parse(params['_json'])
 
@@ -82,6 +87,21 @@ class NotesController < ApplicationController
     logger.info return_notes
 
     render json: return_notes.to_json
+  end
+
+  private
+
+  def check_signature
+    signature, nonce, timestamp = request.headers["Signature"], request.headers["Nonce"], request.headers["Timestamp"]
+    logger.info sign(TOKEN, nonce, timestamp)
+
+    if [signature, nonce, timestamp].include?(nil) || sign(TOKEN, nonce, timestamp) != signature
+      render json: { code: 400, message: 'authentication failed' }
+    end
+  end
+
+  def sign(*data)
+    Base64.encode64(OpenSSL::Digest.new('md5', data.sort.join("")).to_s)
   end
 
 end
