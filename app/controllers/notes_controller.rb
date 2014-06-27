@@ -40,15 +40,21 @@ class NotesController < ApplicationController
           ids << n.id
 
           # compare timestamp
-          if note['timestamp'] > n.timestamp
+          if note['timestamp'] >= n.timestamp
             # TODO: LOCK?
             n.update_attributes(body: note['body'], timestamp: note['timestamp'])
           else
             return_notes << n.jsonize(type: 0)
           end
         rescue ActiveRecord::RecordNotFound
-          # TODO: cannot find the note, need to delete it?
-          next
+          # cannot find the note, delete
+          h = {
+            id: note['id'],
+            body: note['body'],
+            timestamp: note['timestamp'],
+            type: 3
+          }
+          return_notes << h.to_json
         end
       else
         n = Note.new(note)
