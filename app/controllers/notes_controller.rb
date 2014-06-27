@@ -22,6 +22,16 @@ class NotesController < ApplicationController
     respond_with(@note)
   end
 
+  # DELETE /notes/:id
+  def delete
+    @note = Note.find(params[:id])
+    if @note.destroy
+      render json: { code: 200, id: params[:id], message: 'delete success.' }.to_json
+    else
+      render json: { code: 400, id: params[:id], message: 'something fucked up' }.to_json
+    end
+  end
+
   def sync
     # TODO: check token
 
