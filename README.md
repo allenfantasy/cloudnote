@@ -1,6 +1,6 @@
-### CloudNote Document
+## CloudNote Document
 
-#### Data Structure
+### Data Structure
 
 * Note
     * id (universally unique)
@@ -10,13 +10,40 @@
 
 * User [TBD]
 
-#### API
+### API
 
 * 请求和返回都是JSON
 
-##### authentication [TBD]
+#### 对于设备请求的验证
 
-##### POST /notes/sync
+说明:
+
+* TOKEN: 事先硬编码在代码中, service和app共享
+* Nonce: 随机字符串
+* Timestamp: 当前时间戳
+* Signature: 用TOKEN, Nonce和Timestamp组合加密得到的签名
+
+每次请求时:
+
+1. 获取当前的Timestamp
+2. 随机生成一个Nonce字符串
+3. 将TOKEN, Timestamp和Nonce按照字典序排列，排列后按顺序拼成一个字符串
+4. 将上一步得到的字符串用md5加密，用base64进行编码，得到Signature
+5. 将Signature, Timestamp和Nonce都加入请求的Header中，格式为：
+
+```javascript
+{
+  Signature: ...
+  Timestamp: ...
+  Nonce: ...
+}
+```
+
+在后台拿到请求时，会用同样的算法，利用TOKEN和传来的timestamp和nonce计算出signature，与传来的signature比较，如果比较结果相同则验证成功
+
+#### 用户验证 [TBD]
+
+#### POST /notes/sync
 
 * 上传所有NOTE（本来是可以精细点的，不过这样最稳当）
 * 返回NOTE类型：
@@ -81,7 +108,7 @@ RESPONSE FORMAT
 ]
 ```
 
-##### GET /notes
+#### GET /notes
 
 * 得到当前的所有条目
 
@@ -107,7 +134,7 @@ RESPONSE FORMAT
 ]
 ```
 
-##### DELETE /notes/:id
+#### DELETE /notes/:id
 
 * 删除某个条目 e.g: DELETE /notes/1 即删除id=1的note
 * 目前我们的策略（其实这样不是很好，要再讨论）是：在客户端删除某条Note时，**立即** 向服务器发一个DELETE的请求
@@ -131,4 +158,5 @@ RESPONSE FORMAT
   message: 'something fucked up' // maybe be some custom error msg, anyway
 }
 ```
+
 
