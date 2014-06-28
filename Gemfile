@@ -15,6 +15,17 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'pg'
 
+group :development, :test do
+  gem 'pry-rails'
+  gem 'factory_girl_rails'
+end
+
+group :test do
+  gem 'minitest-reporters'
+  gem 'minitest-spec-rails'
+end
+
+
 gem 'spring', group: :development
 
 group :production do

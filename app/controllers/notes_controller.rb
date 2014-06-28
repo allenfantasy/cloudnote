@@ -7,6 +7,7 @@ class NotesController < ApplicationController
   respond_to :html, :json
 
   before_action :check_signature
+  before_action :validate_params, only: [:sync]
 
   def index
     @notes = Note.all
@@ -41,7 +42,7 @@ class NotesController < ApplicationController
 
   def sync
     logger.info "REQUEST IN >>>"
-    logger.info JSON.parse(params['_json'])
+    logger.info params['_json']
 
     return_notes = []
     notes = params['_json']
@@ -78,7 +79,7 @@ class NotesController < ApplicationController
     end
 
     # new notes from other devices
-    newNotes = Note.where("id NOT IN(?)", ids)
+    newNotes = ids.empty? ? Note.all : Note.where("id NOT IN(?)", ids)
     newNotes.each do |note|
       return_notes << note.jsonize(type: 1)
     end
@@ -93,10 +94,25 @@ class NotesController < ApplicationController
 
   def check_signature
     signature, nonce, timestamp = request.headers["Signature"], request.headers["Nonce"], request.headers["Timestamp"]
-    logger.info sign(TOKEN, nonce, timestamp)
 
-    if [signature, nonce, timestamp].include?(nil) || sign(TOKEN, nonce, timestamp) != signature
+    if [signature, nonce, timestamp].include?(nil) || sign(TOKEN, nonce, timestamp.to_s) != signature
       render json: { code: 400, message: 'authentication failed' }
+    end
+  end
+
+  def validate_params
+    data = params['_json']
+    valid_attrs = Note.attribute_names.delete_if { |value| %w[id created_at updated_at].include?(value) }
+
+    if !data.is_a?(Array)
+      render json: { code: 400, message: 'invalid request: please send an array' }.to_json
+    else
+      data.each do |item|
+        valid_attrs.each do |key|
+          render json: { code: 400, message: "missing #{key}" }.to_json if !item.keys.include?(key)
+          return # prevent double render error
+        end
+      end
     end
   end
 
