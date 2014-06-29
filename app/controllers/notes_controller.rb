@@ -83,6 +83,8 @@ class NotesController < ApplicationController
         end
       else
         puts "creating new note: #{note['timestamp']}"
+        puts note
+
         n = Note.new(note)
         if n.save
           return_notes << n.jsonize(type: 2)
