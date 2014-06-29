@@ -85,7 +85,7 @@ class NotesController < ApplicationController
         puts "creating new note: #{note['timestamp']}"
         puts note
 
-        n = Note.new(note)
+        n = Note.new(note.permit!)
         if n.save
           return_notes << n.jsonize(type: 2)
           ids << n.id
