@@ -46,6 +46,7 @@ class NotesController < ApplicationController
 
     return_notes = []
     notes = @data
+    puts @data
 
     ids = []
 
