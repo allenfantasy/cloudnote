@@ -20,7 +20,7 @@ end
 
 describe NotesController do
   describe "GET #index" do
-    it "should fail to auth when missing headers" do
+    it "should return 401 when fail to auth" do
       get :index
       data = JSON.parse(@response.body)#.symbolize_keys
       assert_equal 401, data["code"]
@@ -40,7 +40,7 @@ describe NotesController do
   end
 
   describe "POST #sync" do
-    it "should return 401 if auth failed" do
+    it "should return 401 when fail to auth" do
       params = [
         { id: 1, body: 'Note A', timestamp: Time.now.to_i },
         { id: 2, body: 'Note B', timestamp: Time.now.to_i }

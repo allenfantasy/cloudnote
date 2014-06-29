@@ -47,19 +47,10 @@ class NotesController < ApplicationController
     return_notes = []
     notes = @data
 
-    @data.each do |d, index|
-      puts "Class: #{d.class}"
-      puts "Data: #{d}"
-      puts "ID: #{d['id']}"
-      puts "Body: #{d['body']}"
-      puts "Timestamp: #{d['timestamp']}"
-    end
-
     ids = []
 
     notes.each do |note|
       if note['id']
-        puts "id: #{note['id']}"
         begin
           n = Note.find(note['id'].to_i)
           ids << n.id
@@ -82,10 +73,8 @@ class NotesController < ApplicationController
           return_notes << h
         end
       else
-        puts "creating new note: #{note['timestamp']}"
-        puts note
-
-        n = Note.new(note.permit!)
+        note.permit! if note.class == "ActionController::Parameters"
+        n = Note.new(note) # fix ActiveModel::ForbiddenAttributesError
         if n.save
           return_notes << n.jsonize(type: 2)
           ids << n.id
