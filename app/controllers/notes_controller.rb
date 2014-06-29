@@ -45,7 +45,7 @@ class NotesController < ApplicationController
     logger.info params['_json']
 
     return_notes = []
-    notes = params['_json']
+    notes = @data
 
     ids = []
 
@@ -70,7 +70,7 @@ class NotesController < ApplicationController
             timestamp: note['timestamp'],
             type: 3
           }
-          return_notes << h.to_json
+          return_notes << h
         end
       else
         n = Note.new(note)
@@ -96,17 +96,18 @@ class NotesController < ApplicationController
     signature, nonce, timestamp = request.headers["Signature"], request.headers["Nonce"], request.headers["Timestamp"]
 
     if [signature, nonce, timestamp].include?(nil) || sign(TOKEN, nonce, timestamp.to_s) != signature
-      render json: { code: 400, message: 'authentication failed' }
+      render json: { code: 401, message: 'authentication failed' }
     end
   end
 
   def validate_params
-    data = params['_json']
+    data = params['_json'] || JSON.parse(request.body.string)
     valid_attrs = Note.attribute_names.delete_if { |value| %w[id created_at updated_at].include?(value) }
 
     if !data.is_a?(Array)
       render json: { code: 400, message: 'invalid request: please send an array' }.to_json
     else
+      @data = data
       data.each do |item|
         valid_attrs.each do |key|
           render json: { code: 400, message: "missing #{key}" }.to_json if !item.keys.include?(key)
