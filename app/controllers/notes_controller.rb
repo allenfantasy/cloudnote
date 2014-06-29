@@ -74,7 +74,10 @@ class NotesController < ApplicationController
         end
       else
         n = Note.new(note)
-        return_notes << n.jsonize(type: 2) if n.save
+        if n.save
+          return_notes << n.jsonize(type: 2)
+          ids << n.id
+        end
       end
     end
 
