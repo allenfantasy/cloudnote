@@ -6,7 +6,7 @@ class NotesController < ApplicationController
 
   respond_to :html, :json
 
-  before_action :check_signature
+  #before_action :check_signature
   before_action :validate_params, only: [:sync]
 
   def index
