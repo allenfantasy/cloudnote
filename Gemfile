@@ -4,8 +4,8 @@ else
   source 'https://rubygems.org'
 end
 
+# default gems
 gem 'rails', '4.1.0'
-#gem 'sqlite3'
 gem 'sass-rails', '~> 4.0.3'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.0.0'
@@ -13,21 +13,22 @@ gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
-gem 'pg'
+gem 'spring', group: :development
+
+gem 'pg' # database
+gem 'thin' # server
 
 group :development, :test do
-  gem 'pry-rails'
-  gem 'factory_girl_rails'
+  gem 'pry-rails' # debug
+  gem 'factory_girl_rails' # replace 'fixture'
 end
 
 group :test do
-  gem 'minitest-reporters'
-  gem 'minitest-spec-rails'
+  gem 'minitest-reporters' # better test output format
+  gem 'minitest-spec-rails' # RSpec-like DSL
 end
 
-
-gem 'spring', group: :development
-
+# Heroku
 group :production do
   gem 'rails_12factor'
 end
