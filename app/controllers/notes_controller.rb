@@ -47,12 +47,10 @@ class NotesController < ApplicationController
     return_notes = []
     notes = @data
 
-    puts "======= DATA =========="
-    @data.each do |d|
-      puts d
-      puts d.class
+    @data.each do |d, index|
+      puts "index: #{index}; Class: #{d.class}"
+      puts "Data: #{d}"
     end
-    puts "======= DATA =========="
 
     ids = []
 
