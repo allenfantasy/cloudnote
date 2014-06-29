@@ -59,6 +59,7 @@ class NotesController < ApplicationController
 
     notes.each do |note|
       if note['id']
+        puts "id: #{note['id']}"
         begin
           n = Note.find(note['id'].to_i)
           ids << n.id
@@ -81,6 +82,7 @@ class NotesController < ApplicationController
           return_notes << h
         end
       else
+        puts "creating new note: #{note['timestamp']}"
         n = Note.new(note)
         if n.save
           return_notes << n.jsonize(type: 2)
