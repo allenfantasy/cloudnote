@@ -48,8 +48,11 @@ class NotesController < ApplicationController
     notes = @data
 
     @data.each do |d, index|
-      puts "index: #{index}; Class: #{d.class}"
+      puts "Class: #{d.class}"
       puts "Data: #{d}"
+      puts "ID: #{d['id']}"
+      puts "Body: #{d['body']}"
+      puts "Timestamp: #{d['timestamp']}"
     end
 
     ids = []
