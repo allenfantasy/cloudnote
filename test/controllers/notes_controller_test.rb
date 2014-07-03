@@ -21,6 +21,7 @@ end
 describe NotesController do
   describe "GET #index" do
     it "should return 401 when fail to auth" do
+      skip("no authentication temp")
       get :index
       data = JSON.parse(@response.body)#.symbolize_keys
       assert_equal 401, data["code"]
@@ -40,7 +41,29 @@ describe NotesController do
   end
 
   describe "POST #sync" do
+    it "should be sane when iOS request comes in" do
+      params = {
+        "(null)" => [
+          {"body"=>" Asdf ", "timestamp"=>"2014-07-03 14:05:16 +0000"},
+          {"body"=>"Xuefan is a CHINESE", "timestamp"=>"2014-06-29 14:08:56 +0000"},
+          {"body"=>" Asdggg", "timestamp"=>"2014-06-29 13:14:18 +0000"},
+          {"body"=>"Ze qiu is a fool. Its a truth and cant not\n\nBE CHANGED!!\n", "timestamp"=>"2014-06-29 12:58:36 +0000"},
+          {"body"=>"Qqqqq", "timestamp"=>"2014-06-29 12:57:30 +0000"},
+          {"body"=>" ", "timestamp"=>"2014-06-29 12:57:20 +0000"},
+          {"body"=>"Asdf", "timestamp"=>"2014-06-15 13:30:08 +0000"},
+          {"body"=>"Asdfqwe", "timestamp"=>"2014-06-14 13:30:08 +0000"}
+        ]
+      }
+
+      post :sync, params
+
+      data = JSON.parse(@response.body)
+      assert_equal data[0]["type"], 2
+      assert_equal data.length, 8
+    end
+
     it "should return 401 when fail to auth" do
+      skip("no authentication temp")
       params = [
         { id: 1, body: 'Note A', timestamp: Time.now.to_i },
         { id: 2, body: 'Note B', timestamp: Time.now.to_i }

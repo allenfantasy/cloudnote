@@ -73,9 +73,11 @@ class NotesController < ApplicationController
           return_notes << h
         end
       else
-        note.permit! unless note.is_a? Hash
+        #puts note.class
+        #binding.pry
+        note.permit! if note.class == ActionController::Parameters
 
-        n = Note.new(note.permit!) # fix ActiveModel::ForbiddenAttributesError
+        n = Note.new(note) # fix ActiveModel::ForbiddenAttributesError
         if n.save
           return_notes << n.jsonize(type: 2)
           ids << n.id
