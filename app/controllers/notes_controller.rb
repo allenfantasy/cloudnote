@@ -32,7 +32,13 @@ class NotesController < ApplicationController
 
   # DELETE /notes/:id
   def destroy
-    @note = Note.find(params[:id])
+    begin
+      @note = Note.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render json: { code: 200, id: params[:id], message: 'delete success.' }.to_json
+      return
+    end
+
     if @note.destroy
       render json: { code: 200, id: params[:id], message: 'delete success.' }.to_json
     else
