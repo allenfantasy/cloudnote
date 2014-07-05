@@ -31,7 +31,7 @@ class NotesController < ApplicationController
   end
 
   # DELETE /notes/:id
-  def delete
+  def destroy
     @note = Note.find(params[:id])
     if @note.destroy
       render json: { code: 200, id: params[:id], message: 'delete success.' }.to_json
