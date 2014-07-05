@@ -114,9 +114,10 @@ class NotesController < ApplicationController
   end
 
   def validate_params
-    puts "----------------------body-------------"
-    puts request.body.string
-    data = params['_json'] || params["(null)"] ||JSON.parse(request.body.string)
+    str = request.body.string
+    #puts "----------------------body-------------"
+    #puts request.body.string
+    data = params['_json'] || params["(null)"] || (str.length > 2 ? JSON.parse(str) : [])
     valid_attrs = Note.attribute_names.delete_if { |value| %w[id created_at updated_at].include?(value) }
 
     if !data.is_a?(Array)
